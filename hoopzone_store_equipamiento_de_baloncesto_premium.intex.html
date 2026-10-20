@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HoopZone Store - Equipamiento de Baloncesto Premium</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Inter & Oswald for sporty energetic look -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            hoop: {
+              orange: '#f97316',
+              darkorange: '#ea580c',
+              gold: '#eab308',
+              black: '#0a0a0a',
+              card: '#141414',
+              border: '#262626'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Oswald', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0a0a0a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #262626;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #f97316;
+    }
+    .badge-glow {
+      box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
+    }
+    .hover-scale {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .hover-scale:hover {
+      transform: translateY(-4px) scale(1.01);
+    }
+  </style>
+</head>
+<body class="bg-hoop-black text-gray-100 font-sans min-h-screen flex flex-col justify-between selection:bg-hoop-orange selection:text-white">
+
+  <!-- TOP BANNER PROMO -->
+  <div class="bg-gradient-to-r from-orange-600 via-amber-500 to-orange-600 text-white text-xs md:text-sm py-2 px-4 text-center font-medium tracking-wide flex justify-between items-center z-50 relative shadow-md">
+    <div class="hidden sm:block text-xs font-semibold uppercase tracking-widest bg-black/20 px-2 py-0.5 rounded">ENVÍO GRATIS</div>
+    <p class="w-full sm:w-auto font-medium">🔥 Usá el cupón <span class="font-extrabold underline decoration-black underline-offset-2">HOOPZONE20</span> para 20% OFF en balones y zapatillas. ¡Envío gratis > 60€!</p>
+    <div class="hidden md:flex items-center space-x-3 text-xs">
+      <span class="hover:underline cursor-pointer" onclick="openPromoModal()"><i class="fa-solid fa-ticket mr-1"></i> Ver Ofertas</span>
+    </div>
+  </div>
+
+  <!-- HEADER / NAVBAR -->
+  <header class="sticky top-0 z-40 bg-hoop-black/90 backdrop-blur-md border-b border-hoop-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- LOGO -->
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="resetFilters()">
+          <div class="w-11 h-11 bg-gradient-to-tr from-hoop-orange to-amber-400 rounded-full flex items-center justify-center text-black font-extrabold text-2xl shadow-lg badge-glow">
+            <i class="fa-solid fa-basketball"></i>
+          </div>
+          <div>
+            <span class="font-display font-extrabold text-2xl sm:text-3xl tracking-wider text-white uppercase">HOOP<span class="text-hoop-orange">ZONE</span></span>
+            <span class="text-[10px] tracking-widest text-gray-400 block -mt-1 font-semibold uppercase">Pro Basketball Hub</span>
+          </div>
+        </div>
+
+        <!-- SEARCH BAR (DESKTOP) -->
+        <div class="hidden md:flex flex-1 max-w-md mx-8 relative">
+          <input type="text" id="searchInput" placeholder="Buscar por modelo, marca o categoría (Ej: Jordan, Wilson, Rodilleras)..." 
+            oninput="handleSearchInput(this.value)"
+            class="w-full bg-hoop-card border border-hoop-border text-sm rounded-full py-2.5 pl-11 pr-10 text-gray-200 focus:outline-none focus:border-hoop-orange transition-colors shadow-inner">
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-gray-400 text-sm"></i>
+          <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3.5 top-3 text-gray-400 hover:text-white text-sm">
+            <i class="fa-solid fa-circle-xmark"></i>
+          </button>
+        </div>
+
+        <!-- USER ACTIONS (WISHLIST, CART, PROMOTION) -->
+        <div class="flex items-center space-x-4">
+          <!-- Mobile Search Toggle -->
+          <button onclick="toggleMobileSearch()" class="md:hidden p-2 text-gray-300 hover:text-hoop-orange transition-colors">
+            <i class="fa-solid fa-magnifying-glass text-xl"></i>
+          </button>
+
+          <!-- Wishlist Button -->
+          <button onclick="openWishlistModal()" class="relative p-2 text-gray-300 hover:text-hoop-orange transition-colors" title="Lista de Deseos">
+            <i class="fa-regular fa-heart text-2xl"></i>
+            <span id="wishlistBadge" class="absolute -top-1 -right-1 bg-hoop-orange text-black text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+          </button>
+
+          <!-- Shopping Cart Button -->
+          <button onclick="toggleCartDrawer()" class="relative bg-hoop-orange hover:bg-hoop-darkorange text-black font-bold py-2 px-4 rounded-full flex items-center space-x-2 transition-all shadow-md transform active:scale-95">
+            <i class="fa-solid fa-basket-shopping text-lg"></i>
+            <span class="hidden sm:inline font-display uppercase tracking-wider text-sm">Mi Cesta</span>
+            <span id="cartBadge" class="bg-black text-white text-xs font-extrabold px-2 py-0.5 rounded-full ml-1">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- MOBILE SEARCH BAR SLIDE-DOWN -->
+      <div id="mobileSearchContainer" class="hidden md:hidden pb-4 pt-1">
+        <div class="relative">
+          <input type="text" id="mobileSearchInput" placeholder="Buscar zapatillas, balones, camisetas..." 
+            oninput="handleSearchInput(this.value)"
+            class="w-full bg-hoop-card border border-hoop-border text-sm rounded-full py-2.5 pl-11 pr-10 text-gray-200 focus:outline-none focus:border-hoop-orange">
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-gray-400 text-sm"></i>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO BANNER -->
+  <section class="relative bg-gradient-to-b from-black via-zinc-900 to-hoop-black border-b border-hoop-border overflow-hidden">
+    <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#f97316_1px,transparent_1px)] [background-size:16px_16px]"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 relative z-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div class="space-y-6">
+          <span class="inline-block bg-hoop-orange/10 border border-hoop-orange/30 text-hoop-orange text-xs uppercase tracking-widest font-bold px-3 py-1 rounded-full">
+            <i class="fa-solid fa-bolt mr-1"></i> Colección Oficial 2026
+          </span>
+          <h1 class="font-display text-4xl sm:text-6xl font-extrabold text-white leading-tight uppercase tracking-wide">
+            DOMINA LA CANCHA <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-hoop-orange via-amber-400 to-yellow-500">SIN LÍMITES</span>
+          </h1>
+          <p class="text-gray-400 text-base sm:text-lg max-w-lg font-light leading-relaxed">
+            Equipamiento oficial de baloncesto. Encuentra zapatillas de rendimiento, balones oficiales FIBA/NBA, ropa técnica de compresión y artículos exclusivos de las mejores marcas del planeta.
+          </p>
+          <div class="flex flex-wrap gap-4 pt-2">
+            <a href="#catalog" class="bg-hoop-orange hover:bg-hoop-darkorange text-black font-display font-extrabold uppercase px-6 py-3.5 rounded-xl transition-all shadow-lg flex items-center space-x-2">
+              <span>Explorar Catálogo</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </a>
+            <button onclick="filterByCategory('Balones Oficiales')" class="bg-hoop-card hover:bg-zinc-800 text-white border border-hoop-border font-medium px-6 py-3.5 rounded-xl transition-all">
+              Balones Oficiales
+            </button>
+          </div>
+        </div>
+
+        <!-- HERO HIGHLIGHT CAROUSEL/IMAGE -->
+        <div class="relative flex justify-center items-center">
+          <div class="w-full max-w-md bg-gradient-to-b from-zinc-800 to-zinc-950 p-6 rounded-3xl border border-hoop-border shadow-2xl relative overflow-hidden group">
+            <span class="absolute top-4 left-4 bg-hoop-orange text-black text-xs font-bold px-3 py-1 rounded-full uppercase z-10">
+              Top Ventas
+            </span>
+            <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=800&q=80" alt="Basketball Hero" class="w-full h-64 object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500">
+            <div class="mt-4 flex justify-between items-end">
+              <div>
+                <p class="text-xs text-hoop-orange uppercase tracking-wider font-semibold">Wilson Official</p>
+                <h3 class="font-display text-xl text-white font-bold">Evo NXT Game Basketball</h3>
+              </div>
+              <button onclick="quickView(1)" class="bg-white/10 hover:bg-white/20 text-white p-3 rounded-xl transition-colors">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRANDS CAROUSEL / LOGOS -->
+  <section class="py-6 bg-zinc-950 border-b border-hoop-border overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-center text-xs font-semibold uppercase tracking-widest text-gray-500 mb-4">Marcas Oficiales Disponibles</p>
+      <div id="brandsList" class="flex items-center justify-between overflow-x-auto py-2 space-x-8 no-scrollbar scroll-smooth">
+        <!-- Dynamically rendered brand badges -->
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN CATALOG CONTENT -->
+  <main id="catalog" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full">
+    
+    <!-- CONTROLS & FILTERS HEADER -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <div>
+        <h2 class="font-display text-3xl font-bold text-white uppercase tracking-wide flex items-center gap-2">
+          Catálogo Pro <span id="itemCount" class="text-hoop-orange text-lg font-sans font-medium">(0 productos)</span>
+        </h2>
+        <p class="text-gray-400 text-sm">Filtra por tu marca favorita, categoría o nivel de juego.</p>
+      </div>
+
+      <!-- SORTING & MOBILE FILTER TOGGLE -->
+      <div class="flex items-center space-x-3">
+        <select id="sortSelect" onchange="applyFilters()" class="bg-hoop-card border border-hoop-border text-sm text-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-hoop-orange">
+          <option value="featured">Destacados / Relevantes</option>
+          <option value="price-low">Precio: Menor a Mayor</option>
+          <option value="price-high">Precio: Mayor a Menor</option>
+          <option value="rating">Mejor Valorados</option>
+        </select>
+
+        <button onclick="resetFilters()" class="bg-hoop-card hover:bg-zinc-800 text-gray-300 border border-hoop-border p-2.5 rounded-xl text-sm transition-colors flex items-center gap-1.5" title="Restablecer Filtros">
+          <i class="fa-solid fa-rotate-left"></i>
+          <span class="hidden sm:inline">Limpiar</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- CATEGORY PILLS BAR -->
+    <div id="categoryPills" class="flex items-center space-x-2 overflow-x-auto pb-4 mb-6 scrollbar-none">
+      <!-- Generated via JS -->
+    </div>
+
+    <!-- GRID LAYOUT (FILTER SIDEBAR + PRODUCTS) -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      
+      <!-- SIDEBAR FILTERS -->
+      <aside class="space-y-6">
+        <div class="bg-hoop-card p-5 rounded-2xl border border-hoop-border">
+          <h3 class="font-display text-lg font-bold text-white uppercase mb-4 flex items-center justify-between">
+            <span>Filtros Avanzados</span>
+            <i class="fa-solid fa-sliders text-hoop-orange text-sm"></i>
+          </h3>
+
+          <!-- BRAND FILTER -->
+          <div class="mb-6">
+            <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-3">Marca</label>
+            <div id="brandFilterContainer" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- PRICE RANGE FILTER -->
+          <div class="mb-6 border-t border-hoop-border pt-4">
+            <div class="flex justify-between text-xs font-semibold text-gray-400 uppercase mb-2">
+              <span>Precio Máximo</span>
+              <span id="priceValue" class="text-hoop-orange font-bold text-sm">250 €</span>
+            </div>
+            <input type="range" id="priceRange" min="10" max="250" value="250" step="5" oninput="updatePriceLabel(this.value); applyFilters();"
+              class="w-full accent-hoop-orange bg-zinc-800 rounded-lg h-2 cursor-pointer">
+            <div class="flex justify-between text-[10px] text-gray-500 mt-1">
+              <span>10 €</span>
+              <span>250 €</span>
+            </div>
+          </div>
+
+          <!-- SPECIAL TAGS FILTER -->
+          <div class="border-t border-hoop-border pt-4 space-y-2">
+            <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-2">Promociones</label>
+            <label class="flex items-center space-x-2 text-sm text-gray-300 cursor-pointer">
+              <input type="checkbox" id="filterSale" onchange="applyFilters()" class="rounded bg-zinc-900 border-hoop-border text-hoop-orange focus:ring-hoop-orange">
+              <span>Solo en Oferta</span>
+            </label>
+            <label class="flex items-center space-x-2 text-sm text-gray-300 cursor-pointer">
+              <input type="checkbox" id="filterNew" onchange="applyFilters()" class="rounded bg-zinc-900 border-hoop-border text-hoop-orange focus:ring-hoop-orange">
+              <span>Novedades 2026</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- AUTHENTICITY PROMISE CARD -->
+        <div class="bg-gradient-to-br from-zinc-900 to-black p-5 rounded-2xl border border-hoop-border text-center">
+          <div class="w-10 h-10 bg-hoop-orange/20 text-hoop-orange rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fa-solid fa-shield-halved text-xl"></i>
+          </div>
+          <h4 class="font-display font-bold text-white text-base uppercase">Garantía 100% Oficial</h4>
+          <p class="text-xs text-gray-400 mt-1">Todos nuestros artículos son provistos directamente por distribuidores autorizados de cada marca.</p>
+        </div>
+      </aside>
+
+      <!-- PRODUCT GRID -->
+      <section class="lg:col-span-3">
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- EMPTY STATE -->
+        <div id="emptyState" class="hidden text-center py-16 bg-hoop-card rounded-2xl border border-hoop-border p-8">
+          <i class="fa-solid fa-basketball-hoop text-5xl text-gray-600 mb-4"></i>
+          <h3 class="font-display text-2xl font-bold text-white">No se encontraron productos</h3>
+          <p class="text-gray-400 text-sm mt-2 max-w-md mx-auto">Prueba ajustando los filtros de búsqueda, marca o rango de precio para encontrar lo que buscas.</p>
+          <button onclick="resetFilters()" class="mt-6 bg-hoop-orange text-black font-bold px-6 py-2.5 rounded-full hover:bg-hoop-darkorange transition-colors">
+            Ver Todos los Productos
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- QUICK VIEW PRODUCT MODAL -->
+  <div id="quickViewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 p-4">
+    <div class="bg-hoop-card border border-hoop-border rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeQuickView()" class="absolute top-4 right-4 z-10 bg-black/60 hover:bg-black text-gray-300 hover:text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div id="modalContent" class="grid grid-cols-1 md:grid-cols-2">
+        <!-- Content dynamic -->
+      </div>
+    </div>
+  </div>
+
+  <!-- WISHLIST MODAL -->
+  <div id="wishlistModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 p-4">
+    <div class="bg-hoop-card border border-hoop-border rounded-3xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[85vh] flex flex-col">
+      <div class="flex justify-between items-center pb-4 border-b border-hoop-border">
+        <h3 class="font-display text-2xl font-bold text-white uppercase flex items-center gap-2">
+          <i class="fa-solid fa-heart text-hoop-orange"></i> Lista de Deseos
+        </h3>
+        <button onclick="closeWishlistModal()" class="text-gray-400 hover:text-white">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <div id="wishlistItemsContainer" class="flex-grow overflow-y-auto py-4 space-y-4">
+        <!-- Wishlist dynamic list -->
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE-OVER SHOPPING CART DRAWER -->
+  <div id="cartOverlay" onclick="toggleCartDrawer()" class="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+  <div id="cartDrawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-hoop-card border-l border-hoop-border z-50 transform translate-x-full transition-transform duration-300 flex flex-col justify-between shadow-2xl">
+    
+    <!-- CART HEADER -->
+    <div class="p-6 border-b border-hoop-border flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <i class="fa-solid fa-basket-shopping text-hoop-orange text-xl"></i>
+        <h3 class="font-display text-xl font-bold text-white uppercase">Tu Cesta de Compra</h3>
+      </div>
+      <button onclick="toggleCartDrawer()" class="text-gray-400 hover:text-white p-2">
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+    </div>
+
+    <!-- CART ITEMS LIST -->
+    <div id="cartItemsList" class="p-6 flex-grow overflow-y-auto space-y-4">
+      <!-- Dynamic cart items -->
+    </div>
+
+    <!-- CART FOOTER & CHECKOUT ACTION -->
+    <div class="p-6 border-t border-hoop-border bg-zinc-950 space-y-4">
+      <div class="space-y-1.5 text-sm">
+        <div class="flex justify-between text-gray-400">
+          <span>Subtotal</span>
+          <span id="cartSubtotal" class="text-white font-semibold">0.00 €</span>
+        </div>
+        <div class="flex justify-between text-gray-400">
+          <span>Envío Estimado</span>
+          <span id="cartShipping" class="text-hoop-orange font-semibold">Gratis</span>
+        </div>
+        <div class="flex justify-between text-lg font-bold text-white pt-2 border-t border-hoop-border">
+          <span>Total</span>
+          <span id="cartTotal" class="text-hoop-orange">0.00 €</span>
+        </div>
+      </div>
+
+      <button onclick="openCheckoutModal()" id="btnCheckout" class="w-full bg-hoop-orange hover:bg-hoop-darkorange text-black font-display font-extrabold text-lg uppercase py-3.5 rounded-xl transition-all shadow-lg flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed">
+        <span>Tramitar Pedido</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+
+      <p class="text-[11px] text-center text-gray-500">
+        <i class="fa-solid fa-lock mr-1"></i> Pago 100% Seguro. Devolución gratuita en 30 días.
+      </p>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div id="checkoutModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 p-4">
+    <div class="bg-hoop-card border border-hoop-border rounded-3xl max-w-xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+
+      <h3 class="font-display text-2xl font-bold text-white uppercase mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-credit-card text-hoop-orange"></i> Finalizar Compra
+      </h3>
+
+      <form id="checkoutForm" onsubmit="processOrder(event)" class="space-y-4 text-sm">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Nombre</label>
+            <input type="text" required placeholder="Michael" class="w-full bg-zinc-900 border border-hoop-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-hoop-orange">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Apellidos</label>
+            <input type="text" required placeholder="Jordan" class="w-full bg-zinc-900 border border-hoop-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-hoop-orange">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Correo Electrónico</label>
+          <input type="email" required placeholder="m.jordan@chicago.com" class="w-full bg-zinc-900 border border-hoop-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-hoop-orange">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Dirección de Envío</label>
+          <input type="text" required placeholder="Av. de la Cancha 23, Portal 2" class="w-full bg-zinc-900 border border-hoop-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-hoop-orange">
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div class="col-span-2">
+            <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Ciudad</label>
+            <input type="text" required placeholder="Madrid" class="w-full bg-zinc-900 border border-hoop-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-hoop-orange">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Código Postal</label>
+            <input type="text" required placeholder="28001" class="w-full bg-zinc-900 border border-hoop-border rounded-xl px-3 py-2 text-white focus:outline-none focus:border-hoop-orange">
+          </div>
+        </div>
+
+        <div class="border-t border-hoop-border pt-4 mt-2">
+          <label class="block text-xs font-semibold text-gray-400 uppercase mb-2">Método de Pago Simulada</label>
+          <div class="grid grid-cols-3 gap-2">
+            <label class="border border-hoop-orange bg-hoop-orange/10 rounded-xl p-3 text-center cursor-pointer flex flex-col items-center">
+              <i class="fa-regular fa-credit-card text-hoop-orange text-lg mb-1"></i>
+              <span class="text-[11px] font-bold text-white">Tarjeta</span>
+            </label>
+            <label class="border border-hoop-border bg-zinc-900 rounded-xl p-3 text-center cursor-pointer flex flex-col items-center opacity-60">
+              <i class="fa-brands fa-paypal text-lg mb-1"></i>
+              <span class="text-[11px] font-bold text-gray-300">PayPal</span>
+            </label>
+            <label class="border border-hoop-border bg-zinc-900 rounded-xl p-3 text-center cursor-pointer flex flex-col items-center opacity-60">
+              <i class="fa-solid fa-mobile-screen text-lg mb-1"></i>
+              <span class="text-[11px] font-bold text-gray-300">Bizum</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="bg-zinc-900 p-3 rounded-xl border border-hoop-border flex justify-between items-center text-sm font-bold">
+          <span>Total a Pagar:</span>
+          <span id="checkoutTotal" class="text-hoop-orange text-lg">0.00 €</span>
+        </div>
+
+        <button type="submit" class="w-full bg-hoop-orange hover:bg-hoop-darkorange text-black font-display font-extrabold text-base uppercase py-3.5 rounded-xl transition-all shadow-lg mt-2">
+          Confirmar y Pagar
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ORDER SUCCESS MODAL -->
+  <div id="orderSuccessModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 p-4">
+    <div class="bg-hoop-card border border-hoop-border rounded-3xl max-w-md w-full p-8 text-center shadow-2xl">
+      <div class="w-20 h-20 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/40 text-4xl">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <h3 class="font-display text-3xl font-extrabold text-white uppercase">¡Pedido Confirmado!</h3>
+      <p class="text-gray-300 text-sm mt-2">Gracias por confiar en HoopZone Store. Tu equipamiento ya está siendo preparado para ser entregado en la pista.</p>
+
+      <div class="bg-zinc-950 p-4 rounded-2xl border border-hoop-border my-6 text-left space-y-2">
+        <div class="text-xs text-gray-400 uppercase font-semibold">Número de Seguimiento:</div>
+        <div id="trackingNumber" class="text-hoop-orange font-mono font-bold text-base">HZ-8492041-ES</div>
+        <div class="text-[11px] text-gray-500">Recibirás un e-mail con los detalles y actualizaciones del envío.</div>
+      </div>
+
+      <button onclick="closeOrderSuccessModal()" class="w-full bg-hoop-orange text-black font-bold uppercase py-3 rounded-xl hover:bg-hoop-darkorange transition-colors">
+        Seguir Comprando
+      </button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-zinc-950 border-t border-hoop-border mt-16 text-gray-400 text-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div>
+          <div class="flex items-center space-x-2 mb-4">
+            <i class="fa-solid fa-basketball text-hoop-orange text-2xl"></i>
+            <span class="font-display font-extrabold text-xl text-white">HOOP<span class="text-hoop-orange">ZONE</span></span>
+          </div>
+          <p class="text-xs text-gray-400 leading-relaxed mb-4">
+            La tienda de referencia para jugadores, entrenadores y apasionados del baloncesto. Equipamiento profesional con envío rápido y autenticidad garantizada.
+          </p>
+          <div class="flex space-x-3 text-lg">
+            <a href="#" class="w-8 h-8 rounded-full bg-hoop-card border border-hoop-border flex items-center justify-center hover:text-hoop-orange"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" class="w-8 h-8 rounded-full bg-hoop-card border border-hoop-border flex items-center justify-center hover:text-hoop-orange"><i class="fa-brands fa-tiktok"></i></a>
+            <a href="#" class="w-8 h-8 rounded-full bg-hoop-card border border-hoop-border flex items-center justify-center hover:text-hoop-orange"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#" class="w-8 h-8 rounded-full bg-hoop-card border border-hoop-border flex items-center justify-center hover:text-hoop-orange"><i class="fa-brands fa-twitter"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-display text-white font-bold uppercase mb-4 tracking-wider">Categorías Top</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="#catalog" onclick="filterByCategory('Zapatillas')" class="hover:text-hoop-orange transition-colors">Zapatillas de Baloncesto</a></li>
+            <li><a href="#catalog" onclick="filterByCategory('Balones Oficiales')" class="hover:text-hoop-orange transition-colors">Balones de Baloncesto</a></li>
+            <li><a href="#catalog" onclick="filterByCategory('Camisetas y Uniformes')" class="hover:text-hoop-orange transition-colors">Camisetas NBA / Ropa</a></li>
+            <li><a href="#catalog" onclick="filterByCategory('Protecciones y Compresión')" class="hover:text-hoop-orange transition-colors">Protecciones y Rodilleras</a></li>
+            <li><a href="#catalog" onclick="filterByCategory('Canastas y Equipamiento')" class="hover:text-hoop-orange transition-colors">Canastas y Pistas</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-display text-white font-bold uppercase mb-4 tracking-wider">Marcas Destacadas</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="#catalog" onclick="filterByBrand('Nike')" class="hover:text-hoop-orange">Nike Basketball</a></li>
+            <li><a href="#catalog" onclick="filterByBrand('Air Jordan')" class="hover:text-hoop-orange">Air Jordan Collection</a></li>
+            <li><a href="#catalog" onclick="filterByBrand('Wilson')" class="hover:text-hoop-orange">Wilson Sporting Goods</a></li>
+            <li><a href="#catalog" onclick="filterByBrand('Molten')" class="hover:text-hoop-orange">Molten Official FIBA</a></li>
+            <li><a href="#catalog" onclick="filterByBrand('McDavid')" class="hover:text-hoop-orange">McDavid Compression</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-display text-white font-bold uppercase mb-4 tracking-wider">Atención al Cliente</h4>
+          <ul class="space-y-2 text-xs">
+            <li class="flex items-center gap-2"><i class="fa-solid fa-truck text-hoop-orange"></i> Envío Gratis desde 60 €</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-rotate-left text-hoop-orange"></i> Devoluciones en 30 días</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-headset text-hoop-orange"></i> Soporte: soporte@hoopzone.com</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-hoop-orange"></i> Envíos a toda España y Europa</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-hoop-border pt-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 gap-4">
+        <p>© 2026 HoopZone Store. Todos los derechos reservados. Tienda ficticia e-commerce demostrativa.</p>
+        <div class="flex space-x-4 text-lg">
+          <i class="fa-brands fa-cc-visa hover:text-white"></i>
+          <i class="fa-brands fa-cc-mastercard hover:text-white"></i>
+          <i class="fa-brands fa-cc-paypal hover:text-white"></i>
+          <i class="fa-brands fa-apple-pay hover:text-white"></i>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- APPLICATION LOGIC / JAVASCRIPT -->
+  <script>
+    // --- DATABASE / PRODUCTS DATA ---
+    const BRANDS = [
+      { name: 'Nike', icon: 'fa-bold' },
+      { name: 'Air Jordan', icon: 'fa-plane' },
+      { name: 'Adidas', icon: 'fa-cubes' },
+      { name: 'Puma', icon: 'fa-paw' },
+      { name: 'Wilson', icon: 'fa-circle-dot' },
+      { name: 'Spalding', icon: 'fa-basketball' },
+      { name: 'Molten', icon: 'fa-certificate' },
+      { name: 'Under Armour', icon: 'fa-shield' },
+      { name: 'Mitchell & Ness', icon: 'fa-shirt' },
+      { name: 'McDavid', icon: 'fa-heart-pulse' }
+    ];
+
+    const CATEGORIES = [
+      'Todos',
+      'Zapatillas',
+      'Balones Oficiales',
+      'Camisetas y Uniformes',
+      'Protecciones y Compresión',
+      'Canastas y Equipamiento',
+      'Accesorios'
+    ];
+
+    const PRODUCTS = [
+      {
+        id: 1,
+        name: 'Wilson Evo NXT Game Basketball',
+        brand: 'Wilson',
+        category: 'Balones Oficiales',
+        price: 89.99,
+        rating: 4.9,
+        reviewsCount: 128,
+        image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80',
+        badge: 'Oficial NCAA',
+        sizes: ['Talla 7 (Masculino)', 'Talla 6 (Femenino)'],
+        isNew: false,
+        isSale: false,
+        description: 'El balón de baloncesto con la tecnología Micro-Touch que mejora el agarre y distribuye la humedad para un control perfecto durante todo el juego.'
+      },
+      {
+        id: 2,
+        name: 'Air Jordan 38 Low "Lumière"',
+        brand: 'Air Jordan',
+        category: 'Zapatillas',
+        price: 199.99,
+        originalPrice: 219.99,
+        rating: 4.8,
+        reviewsCount: 94,
+        image: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=600&q=80',
+        badge: 'Top Ventas',
+        sizes: ['41 EU', '42 EU', '43 EU', '44 EU', '45 EU', '46 EU'],
+        isNew: true,
+        isSale: true,
+        description: 'Zapatillas de máximo rendimiento con amortiguación Zoom Strobel y diseño aerodinámico para cambios de ritmo explosivos.'
+      },
+      {
+        id: 3,
+        name: 'Molten BG5000 FIBA Official Game Ball',
+        brand: 'Molten',
+        category: 'Balones Oficiales',
+        price: 115.00,
+        rating: 5.0,
+        reviewsCount: 210,
+        image: 'https://images.unsplash.com/photo-1519861531473-9200262188bf?auto=format&fit=crop&w=600&q=80',
+        badge: 'FIBA World Cup',
+        sizes: ['Talla 7 (Oficial FIBA)'],
+        isNew: false,
+        isSale: false,
+        description: 'Balón de cuero natural oficial de la FIBA. Utilizado en mundiales y torneos olímpicos con textura Premium Leather.'
+      },
+      {
+        id: 4,
+        name: 'Nike LeBron XXI "Tahitian Pearl"',
+        brand: 'Nike',
+        category: 'Zapatillas',
+        price: 179.99,
+        rating: 4.7,
+        reviewsCount: 65,
+        image: 'https://images.unsplash.com/photo-1579338559194-a162d19bf842?auto=format&fit=crop&w=600&q=80',
+        badge: 'Pro Performance',
+        sizes: ['40 EU', '42 EU', '43 EU', '44 EU', '45 EU'],
+        isNew: true,
+        isSale: false,
+        description: 'Diseñadas para la potencia y estabilidad. Incorporan cables Flywire y unidad Air Zoom en talón y antepié.'
+      },
+      {
+        id: 5,
+        name: 'Camiseta Mitchell & Ness Bulls Chicago Jordan #23',
+        brand: 'Mitchell & Ness',
+        category: 'Camisetas y Uniformes',
+        price: 110.00,
+        originalPrice: 130.00,
+        rating: 4.9,
+        reviewsCount: 340,
+        image: 'https://images.unsplash.com/photo-1515523110800-9415d13b84a8?auto=format&fit=crop&w=600&q=80',
+        badge: 'Retro Authentic',
+        sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+        isNew: false,
+        isSale: true,
+        description: 'Camiseta réplica exacta Hardwood Classics de la temporada 1997-98 con bordados de alta calidad.'
+      },
+      {
+        id: 6,
+        name: 'McDavid HEX Knee Pads (Par)',
+        brand: 'McDavid',
+        category: 'Protecciones y Compresión',
+        price: 39.99,
+        rating: 4.8,
+        reviewsCount: 180,
+        image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80',
+        badge: 'Protección TOP',
+        sizes: ['S', 'M', 'L', 'XL'],
+        isNew: false,
+        isSale: false,
+        description: 'Rodilleras de compresión con tecnología HEX de 9mm que protegen frente a impactos en caídas y choques.'
+      },
+      {
+        id: 7,
+        name: 'Adidas Curry Splash Pro 2.0',
+        brand: 'Adidas',
+        category: 'Zapatillas',
+        price: 139.99,
+        rating: 4.6,
+        reviewsCount: 42,
+        image: 'https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&w=600&q=80',
+        badge: 'Lanzamiento',
+        sizes: ['39 EU', '41 EU', '42 EU', '43 EU', '44 EU'],
+        isNew: true,
+        isSale: false,
+        description: 'Tracción multidireccional excepcional y suela de máxima durabilidad para pistas tanto interiores como exteriores.'
+      },
+      {
+        id: 8,
+        name: 'Spalding TF-1000 Legacy Basketball',
+        brand: 'Spalding',
+        category: 'Balones Oficiales',
+        price: 74.95,
+        rating: 4.7,
+        reviewsCount: 88,
+        image: 'https://images.unsplash.com/photo-1519861531473-9200262188bf?auto=format&fit=crop&w=600&q=80',
+        badge: 'Indoor Classic',
+        sizes: ['Talla 7', 'Talla 6'],
+        isNew: false,
+        isSale: false,
+        description: 'Microfibra de piel sintética con canaletas profundas para un agarre suave y óptima disipación del sudor.'
+      },
+      {
+        id: 9,
+        name: 'Canasta Portátil Spalding NBA 54" Acrylic',
+        brand: 'Spalding',
+        category: 'Canastas y Equipamiento',
+        price: 249.99,
+        originalPrice: 289.99,
+        rating: 4.9,
+        reviewsCount: 29,
+        image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80',
+        badge: 'Ajustable',
+        sizes: ['Estándar Regulable (2.30m - 3.05m)'],
+        isNew: false,
+        isSale: true,
+        description: 'Tablero de acrílico resistente de 54 pulgadas con aro basculante Pro Slam de amortiguación de muelles.'
+      },
+      {
+        id: 10,
+        name: 'Mochila Nike Hoops Elite Pro 38L',
+        brand: 'Nike',
+        category: 'Accesorios',
+        price: 64.99,
+        rating: 4.8,
+        reviewsCount: 156,
+        image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=600&q=80',
+        badge: 'Con Compartimento Balón',
+        sizes: ['Talla Única (38 Litros)'],
+        isNew: false,
+        isSale: false,
+        description: 'Mochila especializada con compartimento inferior ventilado para zapatillas y malla superior para el balón.'
+      },
+      {
+        id: 11,
+        name: 'Under Armour Manguito de Compresión Drive',
+        brand: 'Under Armour',
+        category: 'Protecciones y Compresión',
+        price: 22.50,
+        rating: 4.5,
+        reviewsCount: 71,
+        image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80',
+        badge: 'Secado Rápido',
+        sizes: ['S/M', 'L/XL'],
+        isNew: false,
+        isSale: false,
+        description: 'Mantiene los músculos del brazo calientes y ayuda a prevenir fatiga muscular durante tiradas de alta exigencia.'
+      },
+      {
+        id: 12,
+        name: 'Puma All-Pro NITRO Basketball',
+        brand: 'Puma',
+        category: 'Zapatillas',
+        price: 129.99,
+        rating: 4.6,
+        reviewsCount: 38,
+        image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80',
+        badge: 'Nitro Foam',
+        sizes: ['41 EU', '42 EU', '43 EU', '44 EU'],
+        isNew: true,
+        isSale: false,
+        description: 'Espuma NITRO inyectada con nitrógeno para mayor capacidad de respuesta y peso ultraligero.'
+      }
+    ];
+
+    // --- APP STATE ---
+    let cart = [];
+    let wishlist = [];
+    let selectedCategory = 'Todos';
+    let selectedBrand = 'Todas';
+    let maxPrice = 250;
+    let searchQuery = '';
+    let onlySale = false;
+    let onlyNew = false;
+    let currentSort = 'featured';
+
+    // --- INITIALIZATION ---
+    window.onload = function() {
+      renderBrandsList();
+      renderCategoryPills();
+      renderBrandFilters();
+      applyFilters();
+      updateCartUI();
+      updateWishlistUI();
+    };
+
+    // --- RENDER FUNCTIONS ---
+    function renderBrandsList() {
+      const container = document.getElementById('brandsList');
+      container.innerHTML = BRANDS.map(b => `
+        <button onclick="filterByBrand('${b.name}')" class="flex items-center space-x-2 bg-hoop-card hover:bg-zinc-800 border border-hoop-border px-4 py-2 rounded-xl transition-all whitespace-nowrap text-xs font-semibold hover:border-hoop-orange">
+          <i class="fa-solid ${b.icon} text-hoop-orange"></i>
+          <span class="text-gray-200">${b.name}</span>
+        </button>
+      `).join('');
+    }
+
+    function renderCategoryPills() {
+      const container = document.getElementById('categoryPills');
+      container.innerHTML = CATEGORIES.map(cat => {
+        const active = selectedCategory === cat;
+        return `
+          <button onclick="filterByCategory('${cat}')" 
+            class="px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all uppercase tracking-wider ${
+              active 
+                ? 'bg-hoop-orange text-black shadow-md' 
+                : 'bg-hoop-card text-gray-300 border border-hoop-border hover:bg-zinc-800'
+            }">
+            ${cat}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function renderBrandFilters() {
+      const container = document.getElementById('brandFilterContainer');
+      let html = `
+        <label class="flex items-center space-x-2 text-sm text-gray-300 cursor-pointer">
+          <input type="radio" name="brandRadio" value="Todas" ${selectedBrand === 'Todas' ? 'checked' : ''} onchange="filterByBrand('Todas')" class="text-hoop-orange focus:ring-hoop-orange">
+          <span>Todas las Marcas</span>
+        </label>
+      `;
+
+      BRANDS.forEach(b => {
+        html += `
+          <label class="flex items-center space-x-2 text-sm text-gray-300 cursor-pointer">
+            <input type="radio" name="brandRadio" value="${b.name}" ${selectedBrand === b.name ? 'checked' : ''} onchange="filterByBrand('${b.name}')" class="text-hoop-orange focus:ring-hoop-orange">
+            <span>${b.name}</span>
+          </label>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    // --- FILTER & SORT LOGIC ---
+    function applyFilters() {
+      let filtered = PRODUCTS.filter(p => {
+        // Category Filter
+        if (selectedCategory !== 'Todos' && p.category !== selectedCategory) return false;
+        // Brand Filter
+        if (selectedBrand !== 'Todas' && p.brand !== selectedBrand) return false;
+        // Price Filter
+        if (p.price > maxPrice) return false;
+        // Sale Filter
+        if (onlySale && !p.isSale) return false;
+        // New Filter
+        if (onlyNew && !p.isNew) return false;
+        // Search Query
+        if (searchQuery.trim() !== '') {
+          const q = searchQuery.toLowerCase();
+          const matchName = p.name.toLowerCase().includes(q);
+          const matchBrand = p.brand.toLowerCase().includes(q);
+          const matchCat = p.category.toLowerCase().includes(q);
+          if (!matchName && !matchBrand && !matchCat) return false;
+        }
+        return true;
+      });
+
+      // Sorting
+      currentSort = document.getElementById('sortSelect').value;
+      if (currentSort === 'price-low') {
+        filtered.sort((a, b) => a.price - b.price);
+      } else if (currentSort === 'price-high') {
+        filtered.sort((a, b) => b.price - a.price);
+      } else if (currentSort === 'rating') {
+        filtered.sort((a, b) => b.rating - a.rating);
+      }
+
+      renderProducts(filtered);
+    }
+
+    function renderProducts(items) {
+      const grid = document.getElementById('productGrid');
+      const emptyState = document.getElementById('emptyState');
+      const itemCount = document.getElementById('itemCount');
+
+      itemCount.textContent = `(${items.length} producto${items.length !== 1 ? 's' : ''})`;
+
+      if (items.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      grid.innerHTML = items.map(p => {
+        const inWishlist = wishlist.includes(p.id);
+        return `
+          <div class="bg-hoop-card border border-hoop-border rounded-2xl overflow-hidden hover-scale flex flex-col justify-between group shadow-lg">
+            <div>
+              <!-- IMAGE CONTAINER -->
+              <div class="relative bg-zinc-900 overflow-hidden h-52">
+                <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                
+                ${p.badge ? `<span class="absolute top-3 left-3 bg-hoop-orange text-black font-extrabold text-[10px] uppercase px-2.5 py-1 rounded-full tracking-wide shadow-md">${p.badge}</span>` : ''}
+
+                <!-- WISHLIST BUTTON -->
+                <button onclick="toggleWishlist(${p.id})" class="absolute top-3 right-3 w-9 h-9 bg-black/60 hover:bg-black text-white rounded-full flex items-center justify-center transition-colors">
+                  <i class="fa-${inWishlist ? 'solid text-hoop-orange' : 'regular'} fa-heart text-sm"></i>
+                </button>
+
+                <!-- QUICK VIEW OVERLAY BUTTON -->
+                <button onclick="quickView(${p.id})" class="absolute inset-x-4 bottom-3 bg-white/90 hover:bg-white text-black font-bold text-xs uppercase py-2 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-md">
+                  Vista Rápida
+                </button>
+              </div>
+
+              <!-- CARD DETAILS -->
+              <div class="p-4 space-y-2">
+                <div class="flex justify-between items-center text-xs text-gray-400">
+                  <span class="text-hoop-orange font-semibold uppercase tracking-wider">${p.brand}</span>
+                  <div class="flex items-center text-amber-400">
+                    <i class="fa-solid fa-star text-[11px] mr-1"></i>
+                    <span>${p.rating}</span>
+                  </div>
+                </div>
+
+                <h3 class="font-display font-bold text-white text-base leading-snug line-clamp-2 hover:text-hoop-orange cursor-pointer transition-colors" onclick="quickView(${p.id})">
+                  ${p.name}
+                </h3>
+              </div>
+            </div>
+
+            <!-- PRICE & ADD TO CART -->
+            <div class="p-4 pt-0 flex items-center justify-between border-t border-hoop-border/50 mt-2">
+              <div>
+                <span class="text-lg font-extrabold text-white">${p.price.toFixed(2)} €</span>
+                ${p.originalPrice ? `<span class="text-xs text-gray-500 line-through ml-1">${p.originalPrice.toFixed(2)} €</span>` : ''}
+              </div>
+
+              <button onclick="addToCart(${p.id})" class="bg-hoop-orange hover:bg-hoop-darkorange text-black p-2.5 rounded-xl font-bold transition-all transform active:scale-90" title="Añadir a la Cesta">
+                <i class="fa-solid fa-cart-plus text-base"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // --- QUICK VIEW MODAL ---
+    function quickView(productId) {
+      const p = PRODUCTS.find(item => item.id === productId);
+      if (!p) return;
+
+      const modal = document.getElementById('quickViewModal');
+      const content = document.getElementById('modalContent');
+
+      content.innerHTML = `
+        <div class="bg-zinc-900 p-6 flex items-center justify-center relative">
+          <img src="${p.image}" alt="${p.name}" class="w-full max-h-72 object-contain rounded-2xl">
+        </div>
+        <div class="p-6 space-y-4">
+          <div>
+            <span class="text-xs font-bold text-hoop-orange uppercase tracking-wider">${p.brand} • ${p.category}</span>
+            <h2 class="font-display text-2xl font-bold text-white uppercase mt-1 leading-tight">${p.name}</h2>
+            <div class="flex items-center space-x-2 mt-2 text-xs text-gray-400">
+              <span class="text-amber-400 font-bold"><i class="fa-solid fa-star"></i> ${p.rating}</span>
+              <span>(${p.reviewsCount} valoraciones)</span>
+              <span class="text-emerald-400 font-semibold">• En Stock</span>
+            </div>
+          </div>
+
+          <p class="text-gray-300 text-xs leading-relaxed">${p.description}</p>
+
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase mb-2">Seleccionar Talla / Tamaño:</label>
+            <div class="flex flex-wrap gap-2" id="sizeSelector">
+              ${p.sizes.map((s, idx) => `
+                <button type="button" onclick="selectSize(this)" class="px-3 py-1.5 rounded-lg border border-hoop-border text-xs text-gray-200 hover:border-hoop-orange ${idx === 0 ? 'border-hoop-orange bg-hoop-orange/10 font-bold text-hoop-orange' : ''}">
+                  ${s}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-hoop-border flex items-center justify-between">
+            <div>
+              <span class="text-2xl font-extrabold text-white">${p.price.toFixed(2)} €</span>
+              ${p.originalPrice ? `<span class="text-xs text-gray-500 line-through ml-2">${p.originalPrice.toFixed(2)} €</span>` : ''}
+            </div>
+            <button onclick="addToCart(${p.id}); closeQuickView();" class="bg-hoop-orange hover:bg-hoop-darkorange text-black font-display font-extrabold px-6 py-3 rounded-xl uppercase text-sm transition-all shadow-md">
+              <i class="fa-solid fa-basket-shopping mr-2"></i> Añadir a la Cesta
+            </button>
+          </div>
+        </div>
+      `;
+
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      modal.firstElementChild.classList.remove('scale-95');
+    }
+
+    function selectSize(btn) {
+      const parent = btn.parentElement;
+      Array.from(parent.children).forEach(c => {
+        c.classList.remove('border-hoop-orange', 'bg-hoop-orange/10', 'font-bold', 'text-hoop-orange');
+        c.classList.add('border-hoop-border', 'text-gray-200');
+      });
+      btn.classList.add('border-hoop-orange', 'bg-hoop-orange/10', 'font-bold', 'text-hoop-orange');
+      btn.classList.remove('border-hoop-border', 'text-gray-200');
+    }
+
+    function closeQuickView() {
+      const modal = document.getElementById('quickViewModal');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      modal.firstElementChild.classList.add('scale-95');
+    }
+
+    // --- CART FUNCTIONALITY ---
+    function addToCart(productId) {
+      const p = PRODUCTS.find(item => item.id === productId);
+      if (!p) return;
+
+      const existing = cart.find(item => item.id === productId);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ ...p, quantity: 1, selectedSize: p.sizes[0] });
+      }
+
+      updateCartUI();
+      toggleCartDrawer(true);
+    }
+
+    function changeQuantity(productId, delta) {
+      const item = cart.find(i => i.id === productId);
+      if (!item) return;
+
+      item.quantity += delta;
+      if (item.quantity <= 0) {
+        cart = cart.filter(i => i.id !== productId);
+      }
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const badge = document.getElementById('cartBadge');
+      const container = document.getElementById('cartItemsList');
+      const subtotalEl = document.getElementById('cartSubtotal');
+      const totalEl = document.getElementById('cartTotal');
+      const checkoutTotalEl = document.getElementById('checkoutTotal');
+      const btnCheckout = document.getElementById('btnCheckout');
+
+      const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
+      badge.textContent = totalItems;
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 text-gray-500 space-y-3">
+            <i class="fa-solid fa-basket-shopping text-4xl text-gray-600"></i>
+            <p class="text-sm">Tu cesta está vacía</p>
+          </div>
+        `;
+        subtotalEl.textContent = '0.00 €';
+        totalEl.textContent = '0.00 €';
+        if (checkoutTotalEl) checkoutTotalEl.textContent = '0.00 €';
+        btnCheckout.disabled = true;
+        return;
+      }
+
+      btnCheckout.disabled = false;
+      const subtotal = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+      
+      subtotalEl.textContent = `${subtotal.toFixed(2)} €`;
+      totalEl.textContent = `${subtotal.toFixed(2)} €`;
+      if (checkoutTotalEl) checkoutTotalEl.textContent = `${subtotal.toFixed(2)} €`;
+
+      container.innerHTML = cart.map(item => `
+        <div class="flex items-center justify-between bg-zinc-900 p-3 rounded-2xl border border-hoop-border space-x-3">
+          <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-xl bg-black">
+          <div class="flex-grow min-w-0">
+            <h4 class="text-xs font-bold text-white truncate">${item.name}</h4>
+            <p class="text-[11px] text-gray-400 font-mono">${item.selectedSize}</p>
+            <span class="text-sm font-extrabold text-hoop-orange">${(item.price * item.quantity).toFixed(2)} €</span>
+          </div>
+          <div class="flex items-center space-x-2 bg-black px-2 py-1 rounded-lg border border-hoop-border">
+            <button onclick="changeQuantity(${item.id}, -1)" class="text-gray-400 hover:text-white text-xs px-1">-</button>
+            <span class="text-xs font-bold text-white">${item.quantity}</span>
+            <button onclick="changeQuantity(${item.id}, 1)" class="text-gray-400 hover:text-white text-xs px-1">+</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleCartDrawer(forceOpen = false) {
+      const drawer = document.getElementById('cartDrawer');
+      const overlay = document.getElementById('cartOverlay');
+
+      if (forceOpen || drawer.classList.contains('translate-x-full')) {
+        drawer.classList.remove('translate-x-full');
+        overlay.classList.remove('opacity-0', 'pointer-events-none');
+      } else {
+        drawer.classList.add('translate-x-full');
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+      }
+    }
+
+    // --- WISHLIST FUNCTIONALITY ---
+    function toggleWishlist(productId) {
+      const index = wishlist.indexOf(productId);
+      if (index > -1) {
+        wishlist.splice(index, 1);
+      } else {
+        wishlist.push(productId);
+      }
+      updateWishlistUI();
+      applyFilters();
+    }
+
+    function updateWishlistUI() {
+      const badge = document.getElementById('wishlistBadge');
+      badge.textContent = wishlist.length;
+      if (wishlist.length > 0) {
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    function openWishlistModal() {
+      const modal = document.getElementById('wishlistModal');
+      const container = document.getElementById('wishlistItemsContainer');
+
+      if (wishlist.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 text-gray-500">
+            <i class="fa-regular fa-heart text-4xl mb-2"></i>
+            <p class="text-sm">No tienes productos en tu lista de deseos.</p>
+          </div>
+        `;
+      } else {
+        const items = PRODUCTS.filter(p => wishlist.includes(p.id));
+        container.innerHTML = items.map(p => `
+          <div class="flex items-center justify-between bg-zinc-900 p-4 rounded-2xl border border-hoop-border">
+            <div class="flex items-center space-x-3">
+              <img src="${p.image}" class="w-14 h-14 object-cover rounded-xl">
+              <div>
+                <h4 class="text-sm font-bold text-white">${p.name}</h4>
+                <p class="text-xs text-hoop-orange font-bold">${p.price.toFixed(2)} €</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="addToCart(${p.id}); toggleWishlist(${p.id});" class="bg-hoop-orange text-black px-3 py-1.5 rounded-lg font-bold text-xs">
+                Mover a Cesta
+              </button>
+              <button onclick="toggleWishlist(${p.id}); openWishlistModal();" class="text-gray-400 hover:text-red-500 p-2">
+                <i class="fa-solid fa-trash text-sm"></i>
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeWishlistModal() {
+      document.getElementById('wishlistModal').classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    // --- CHECKOUT & ORDER LOGIC ---
+    function openCheckoutModal() {
+      if (cart.length === 0) return;
+      toggleCartDrawer(false);
+      const modal = document.getElementById('checkoutModal');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById('checkoutModal').classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function processOrder(e) {
+      e.preventDefault();
+      closeCheckoutModal();
+      
+      // Generate random order tracking code
+      const trackingCode = 'HZ-' + Math.floor(1000000 + Math.random() * 9000000) + '-ES';
+      document.getElementById('trackingNumber').textContent = trackingCode;
+
+      // Clear cart
+      cart = [];
+      updateCartUI();
+
+      // Show Order Success Modal
+      const successModal = document.getElementById('orderSuccessModal');
+      successModal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeOrderSuccessModal() {
+      document.getElementById('orderSuccessModal').classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    // --- HELPER HANDLERS ---
+    function handleSearchInput(val) {
+      searchQuery = val;
+      const clearBtn = document.getElementById('clearSearchBtn');
+      if (val.length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+      applyFilters();
+    }
+
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('mobileSearchInput').value = '';
+      searchQuery = '';
+      document.getElementById('clearSearchBtn').classList.add('hidden');
+      applyFilters();
+    }
+
+    function toggleMobileSearch() {
+      const container = document.getElementById('mobileSearchContainer');
+      container.classList.toggle('hidden');
+    }
+
+    function filterByCategory(category) {
+      selectedCategory = category;
+      renderCategoryPills();
+      applyFilters();
+    }
+
+    function filterByBrand(brand) {
+      selectedBrand = brand;
+      renderBrandFilters();
+      applyFilters();
+    }
+
+    function updatePriceLabel(val) {
+      maxPrice = parseFloat(val);
+      document.getElementById('priceValue').textContent = `${maxPrice} €`;
+    }
+
+    function resetFilters() {
+      selectedCategory = 'Todos';
+      selectedBrand = 'Todas';
+      maxPrice = 250;
+      searchQuery = '';
+      onlySale = false;
+      onlyNew = false;
+
+      document.getElementById('searchInput').value = '';
+      document.getElementById('mobileSearchInput').value = '';
+      document.getElementById('priceRange').value = 250;
+      document.getElementById('priceValue').textContent = '250 €';
+      document.getElementById('filterSale').checked = false;
+      document.getElementById('filterNew').checked = false;
+
+      renderCategoryPills();
+      renderBrandFilters();
+      applyFilters();
+    }
+
+    function openPromoModal() {
+      alert("🔥 CÓDIGO DE DESCUENTO: HOOPZONE20\n\nAplica un 20% de descuento en balones y zapatillas. ¡Copialo en el checkout!");
+    }
+  </script>
+</body>
+</html>
